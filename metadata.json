@@ -1,0 +1,7 @@
+{
+  "name": "Vr_2.0_Cường Gemini Audio Transcriber",
+  "description": "A web application to transcribe audio files into text using the Google Gemini API. Upload an audio file, and the app will generate a text transcription.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
