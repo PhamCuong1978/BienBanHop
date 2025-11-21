@@ -548,7 +548,30 @@ const App: React.FC = () => {
                                 >
                                     {isLoading ? 'Processing...' : `▶️ Process ${selectedFiles.length} File(s)`}
                                 </button>
-                                {error && <p className="text-red-400 mt-4">{error}</p>}
+                                {error && (
+                                    <div className="mt-6 mx-auto max-w-lg p-4 bg-red-900/20 border border-red-500/50 rounded-xl text-left">
+                                        <div className="flex items-start gap-3">
+                                            <div className="text-red-400 text-xl">⚠️</div>
+                                            <div className="flex-1">
+                                                <h3 className="text-red-400 font-bold text-sm uppercase tracking-wide mb-1">Lỗi Cấu Hình</h3>
+                                                <p className="text-white font-medium mb-2">{error}</p>
+                                                
+                                                {error.includes("API_KEY") && (
+                                                    <div className="text-sm text-gray-300 space-y-3 bg-gray-900/50 p-3 rounded-lg border border-gray-700/50">
+                                                        <p className="text-cyan-300 font-semibold">Bạn đang chạy trên Vercel?</p>
+                                                        <p>Bạn cần thiết lập biến môi trường trong phần cài đặt của Vercel:</p>
+                                                        <ol className="list-decimal list-inside space-y-1 ml-1 text-gray-400 text-xs sm:text-sm">
+                                                            <li>Vào <strong>Settings</strong> &rarr; <strong>Environment Variables</strong></li>
+                                                            <li>Key: <code className="text-yellow-400 bg-gray-800 px-1 rounded">API_KEY</code></li>
+                                                            <li>Value: <em>(Dán khóa API Gemini của bạn)</em></li>
+                                                            <li>Nhấn <strong>Save</strong> và <strong>Redeploy</strong> lại dự án.</li>
+                                                        </ol>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </>
                     )}
