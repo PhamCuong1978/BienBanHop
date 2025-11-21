@@ -40,21 +40,20 @@ const handleGeminiError = (error: unknown): Error => {
 
 // Helper to safely get the API Key
 export const getApiKey = (): string | undefined => {
-    // 1. Priority: Check process.env.API_KEY (Standard Node/Server environment)
-    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
-        return process.env.API_KEY;
+    // 1. Check standard process.env (Standard Node or Server environment)
+    if (typeof process !== 'undefined' && process.env) {
+        if (process.env.API_KEY) return process.env.API_KEY;
+        // Some environments might expose VITE_ prefixed variables in process.env
+        if (process.env.VITE_API_KEY) return process.env.VITE_API_KEY;
     }
     
-    // 2. Fallback: Check import.meta.env.VITE_API_KEY (Vite Client-side environment)
-    // This is required for Vercel deployments of Client-Side React apps where process.env is not polyfilled.
-    try {
-        // @ts-ignore
-        if (import.meta && import.meta.env && import.meta.env.VITE_API_KEY) {
-            // @ts-ignore
-            return import.meta.env.VITE_API_KEY;
-        }
-    } catch (e) {
-        // Ignore errors if import.meta is not available
+    // 2. Check Vite Client-side environment (import.meta.env)
+    // @ts-ignore
+    if (typeof import.meta !== 'undefined' && import.meta.env) {
+         // @ts-ignore
+        if (import.meta.env.VITE_API_KEY) return import.meta.env.VITE_API_KEY;
+         // @ts-ignore
+        if (import.meta.env.API_KEY) return import.meta.env.API_KEY;
     }
     
     return undefined;
@@ -63,7 +62,7 @@ export const getApiKey = (): string | undefined => {
 export const transcribeAudio = async (file: File, modelName: string): Promise<string> => {
     const apiKey = getApiKey();
     if (!apiKey) {
-        throw new Error("API_KEY is not configured.");
+        throw new Error("API_KEY is not configured. Please set VITE_API_KEY in your environment variables.");
     }
 
     const ai = new GoogleGenAI({ apiKey });
@@ -97,7 +96,7 @@ export const transcribeAudio = async (file: File, modelName: string): Promise<st
 export const identifySpeakers = async (transcription: string, modelName: string): Promise<string> => {
     const apiKey = getApiKey();
     if (!apiKey) {
-        throw new Error("API_KEY is not configured.");
+         throw new Error("API_KEY is not configured. Please set VITE_API_KEY in your environment variables.");
     }
     const ai = new GoogleGenAI({ apiKey });
 
@@ -137,7 +136,7 @@ export const generateMeetingMinutes = async (
 ): Promise<string> => {
     const apiKey = getApiKey();
     if (!apiKey) {
-        throw new Error("API_KEY is not configured.");
+         throw new Error("API_KEY is not configured. Please set VITE_API_KEY in your environment variables.");
     }
 
     const ai = new GoogleGenAI({ apiKey });
@@ -212,7 +211,7 @@ export const regenerateMeetingMinutes = async (
 ): Promise<string> => {
     const apiKey = getApiKey();
     if (!apiKey) {
-        throw new Error("API_KEY is not configured.");
+         throw new Error("API_KEY is not configured. Please set VITE_API_KEY in your environment variables.");
     }
 
     const ai = new GoogleGenAI({ apiKey });
@@ -280,7 +279,7 @@ Bây giờ, hãy tạo lại toàn bộ tệp HTML đã được chỉnh sửa t
 export const liveTranscriptionSession = async (callbacks: any) => {
      const apiKey = getApiKey();
     if (!apiKey) {
-        throw new Error("API_KEY is not configured.");
+         throw new Error("API_KEY is not configured. Please set VITE_API_KEY in your environment variables.");
     }
     const ai = new GoogleGenAI({ apiKey });
     return ai.live.connect({

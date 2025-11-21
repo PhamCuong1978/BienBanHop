@@ -551,24 +551,9 @@ const App: React.FC = () => {
                                     {isLoading ? 'Processing...' : `▶️ Process ${selectedFiles.length} File(s)`}
                                 </button>
                                 {error && (
-                                    <div className="mt-6 mx-auto max-w-lg p-4 bg-red-900/20 border border-red-500/50 rounded-xl text-left">
-                                        <div className="flex items-start gap-3">
-                                            <div className="text-red-400 text-xl">⚠️</div>
-                                            <div className="flex-1">
-                                                <h3 className="text-red-400 font-bold text-sm uppercase tracking-wide mb-1">Lỗi Cấu Hình Vercel</h3>
-                                                <p className="text-white font-medium mb-2">Không tìm thấy khóa API.</p>
-                                                
-                                                <div className="text-sm text-gray-300 space-y-3 bg-gray-900/50 p-3 rounded-lg border border-gray-700/50">
-                                                    <p className="font-bold text-cyan-300">Hướng dẫn cấu hình:</p>
-                                                    <ol className="list-decimal list-inside space-y-2 ml-1 text-gray-400 text-xs sm:text-sm">
-                                                        <li>Vào <strong>Settings</strong> &rarr; <strong>Environment Variables</strong> trên Vercel.</li>
-                                                        <li>Thêm biến mới có tên: <code className="text-yellow-400 bg-gray-800 px-1 rounded">VITE_API_KEY</code></li>
-                                                        <li>Giá trị: <em>(Dán khóa API Gemini của bạn)</em></li>
-                                                        <li>Nhấn <strong>Save</strong> và quan trọng nhất là <strong>Redeploy</strong> lại dự án.</li>
-                                                    </ol>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div className="mt-6 p-4 bg-red-900/50 border border-red-500 text-red-100 rounded-lg text-center">
+                                        <p className="font-bold">Error:</p>
+                                        <p>{error}</p>
                                     </div>
                                 )}
                             </div>
