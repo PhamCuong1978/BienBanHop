@@ -499,7 +499,7 @@ const App: React.FC = () => {
                      <div className="space-y-4">
                         <div className="flex justify-between items-end border-b border-gray-600 pb-2">
                             <h2 className="text-lg font-semibold text-cyan-400">1. Get Content</h2>
-                            <h2 className="text-lg font-semibold text-cyan-400">2. Version 2.0</h2>
+                            <h2 className="text-lg font-semibold text-cyan-400">Version 2.0</h2>
                         </div>
                         <div className="flex border-b border-gray-600 -mt-2">
                            <TabButton tabName="file">From File(s)</TabButton>
@@ -560,11 +560,10 @@ const App: React.FC = () => {
                                                 <p className="text-white font-medium mb-2">Không tìm thấy khóa API.</p>
                                                 
                                                 <div className="text-sm text-gray-300 space-y-3 bg-gray-900/50 p-3 rounded-lg border border-gray-700/50">
-                                                    <p>Để bảo mật, Vercel thường không chia sẻ biến môi trường trực tiếp trừ khi chúng có tiền tố cụ thể.</p>
-                                                    <p className="font-bold text-cyan-300">Hãy làm theo các bước sau:</p>
+                                                    <p className="font-bold text-cyan-300">Hướng dẫn cấu hình:</p>
                                                     <ol className="list-decimal list-inside space-y-2 ml-1 text-gray-400 text-xs sm:text-sm">
                                                         <li>Vào <strong>Settings</strong> &rarr; <strong>Environment Variables</strong> trên Vercel.</li>
-                                                        <li>Thêm biến mới có tên: <code className="text-yellow-400 bg-gray-800 px-1 rounded">VITE_API_KEY</code></li>
+                                                        <li>Thêm biến mới có tên: <code className="text-yellow-400 bg-gray-800 px-1 rounded">API_KEY</code></li>
                                                         <li>Giá trị: <em>(Dán khóa API Gemini của bạn)</em></li>
                                                         <li>Nhấn <strong>Save</strong> và quan trọng nhất là <strong>Redeploy</strong> lại dự án.</li>
                                                     </ol>

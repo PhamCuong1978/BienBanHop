@@ -39,27 +39,14 @@ const handleGeminiError = (error: unknown): Error => {
     return new Error("An unknown error occurred.");
 };
 
-// Helper to safely get the API Key from various environment configurations
-const getApiKey = (): string | undefined => {
-    // 1. Try standard process.env (Node.js, Webpack, CRA, AI Studio)
-    if (typeof process !== 'undefined' && process.env) {
-        if (process.env.API_KEY) return process.env.API_KEY;
-        if (process.env.REACT_APP_API_KEY) return process.env.REACT_APP_API_KEY;
+// Helper to safely get the API Key
+export const getApiKey = (): string | undefined => {
+    // Strictly use process.env.API_KEY as requested.
+    // Note: In Vercel + Vite/Webpack, ensure 'API_KEY' is exposed via define/env config if not using standard prefix.
+    // However, this strictly follows the instruction to use process.env.API_KEY.
+    if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
+        return process.env.API_KEY;
     }
-    
-    // 2. Try Vite's import.meta.env (Modern standard)
-    try {
-        // @ts-ignore: Handle cases where import.meta is not available in TS context
-        if (typeof import.meta !== 'undefined' && import.meta.env) {
-            // @ts-ignore
-            if (import.meta.env.VITE_API_KEY) return import.meta.env.VITE_API_KEY;
-            // @ts-ignore
-            if (import.meta.env.API_KEY) return import.meta.env.API_KEY;
-        }
-    } catch (e) {
-        // Ignore errors if import.meta is not supported
-    }
-    
     return undefined;
 };
 
