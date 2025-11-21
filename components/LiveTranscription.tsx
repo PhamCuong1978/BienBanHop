@@ -73,10 +73,24 @@ const LiveTranscription: React.FC<LiveTranscriptionProps> = ({ onComplete, disab
         setIsLive(true);
 
         try {
-            if (!process.env.API_KEY) {
+            // Helper to get API Key safely from multiple sources (Duplicate logic to avoid import issues for now)
+            let apiKey = '';
+            if (typeof process !== 'undefined' && process.env) {
+                if (process.env.API_KEY) apiKey = process.env.API_KEY;
+                else if (process.env.REACT_APP_API_KEY) apiKey = process.env.REACT_APP_API_KEY;
+            }
+            // @ts-ignore
+            if (!apiKey && typeof import.meta !== 'undefined' && import.meta.env) {
+                // @ts-ignore
+                if (import.meta.env.VITE_API_KEY) apiKey = import.meta.env.VITE_API_KEY;
+                // @ts-ignore
+                else if (import.meta.env.API_KEY) apiKey = import.meta.env.API_KEY;
+            }
+
+            if (!apiKey) {
                 throw new Error("API_KEY is not configured.");
             }
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const ai = new GoogleGenAI({ apiKey });
             
             streamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true });
 

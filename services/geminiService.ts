@@ -1,5 +1,5 @@
 
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Modality } from "@google/genai";
 import { MeetingDetails } from "../components/MeetingMinutesGenerator";
 
 const fileToBase64 = (file: File): Promise<string> => {
@@ -39,13 +39,37 @@ const handleGeminiError = (error: unknown): Error => {
     return new Error("An unknown error occurred.");
 };
 
+// Helper to safely get the API Key from various environment configurations
+const getApiKey = (): string | undefined => {
+    // 1. Try standard process.env (Node.js, Webpack, CRA, AI Studio)
+    if (typeof process !== 'undefined' && process.env) {
+        if (process.env.API_KEY) return process.env.API_KEY;
+        if (process.env.REACT_APP_API_KEY) return process.env.REACT_APP_API_KEY;
+    }
+    
+    // 2. Try Vite's import.meta.env (Modern standard)
+    try {
+        // @ts-ignore: Handle cases where import.meta is not available in TS context
+        if (typeof import.meta !== 'undefined' && import.meta.env) {
+            // @ts-ignore
+            if (import.meta.env.VITE_API_KEY) return import.meta.env.VITE_API_KEY;
+            // @ts-ignore
+            if (import.meta.env.API_KEY) return import.meta.env.API_KEY;
+        }
+    } catch (e) {
+        // Ignore errors if import.meta is not supported
+    }
+    
+    return undefined;
+};
 
 export const transcribeAudio = async (file: File, modelName: string): Promise<string> => {
-    if (!process.env.API_KEY) {
+    const apiKey = getApiKey();
+    if (!apiKey) {
         throw new Error("API_KEY is not configured.");
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey });
 
     try {
         const audioData = await fileToBase64(file);
@@ -74,10 +98,11 @@ export const transcribeAudio = async (file: File, modelName: string): Promise<st
 };
 
 export const identifySpeakers = async (transcription: string, modelName: string): Promise<string> => {
-    if (!process.env.API_KEY) {
+    const apiKey = getApiKey();
+    if (!apiKey) {
         throw new Error("API_KEY is not configured.");
     }
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey });
 
     const prompt = `You are an expert in analyzing conversation transcripts. Your task is to identify the different speakers in the following text.
     
@@ -87,7 +112,7 @@ Instruction:
 - Rewrite the entire transcript, but prefix each person's dialogue with a label like "[NGƯỜI NÓI 1]:", "[NGƯỜI NÓI 2]:", etc.
 - IMPORTANT: The label MUST be on the same line as the dialogue it corresponds to.
 - Ensure the spoken text itself remains unchanged.
-- If the text is not a conversation or you cannot distinguish different speakers, return the original text without any new labels.
+- If the text is not a conversation or you cannot distinguish different speakers, return the original text without any labels.
 
 Here is the transcript:
 ---
@@ -113,11 +138,12 @@ export const generateMeetingMinutes = async (
     details: MeetingDetails,
     modelName: string
 ): Promise<string> => {
-    if (!process.env.API_KEY) {
+    const apiKey = getApiKey();
+    if (!apiKey) {
         throw new Error("API_KEY is not configured.");
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey });
 
     const promptTemplate = `Bạn là thư ký chuyên nghiệp với hơn 10 năm kinh nghiệm trong việc ghi chép và tóm tắt biên bản các cuộc họp nội bộ và cuộc họp với đối tác.
 Nhiệm vụ của bạn là tổng hợp nội dung cuộc họp một cách ngắn gọn, chính xác và có thể hành động được.
@@ -187,11 +213,12 @@ export const regenerateMeetingMinutes = async (
     editRequest: string,
     modelName: string
 ): Promise<string> => {
-    if (!process.env.API_KEY) {
+    const apiKey = getApiKey();
+    if (!apiKey) {
         throw new Error("API_KEY is not configured.");
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey });
 
     const promptTemplate = `Bạn là một thư ký chuyên nghiệp, đang hỗ trợ người dùng chỉnh sửa một biên bản cuộc họp đã được tạo trước đó.
 Nhiệm vụ của bạn là nhận biên bản cuộc họp hiện tại (dưới dạng HTML), cùng với các yêu cầu chỉnh sửa từ người dùng, và tạo ra một phiên bản HTML mới đã được cập nhật.
@@ -252,3 +279,19 @@ Bây giờ, hãy tạo lại toàn bộ tệp HTML đã được chỉnh sửa t
         throw handleGeminiError(error);
     }
 };
+
+export const liveTranscriptionSession = async (callbacks: any) => {
+     const apiKey = getApiKey();
+    if (!apiKey) {
+        throw new Error("API_KEY is not configured.");
+    }
+    const ai = new GoogleGenAI({ apiKey });
+    return ai.live.connect({
+        model: 'gemini-2.5-flash-native-audio-preview-09-2025',
+        callbacks,
+        config: {
+             responseModalities: [Modality.AUDIO], 
+             inputAudioTranscription: {},
+        }
+    });
+}
