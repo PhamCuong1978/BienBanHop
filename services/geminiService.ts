@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Modality } from "@google/genai";
 import { MeetingDetails } from "../components/MeetingMinutesGenerator";
 
@@ -41,12 +40,23 @@ const handleGeminiError = (error: unknown): Error => {
 
 // Helper to safely get the API Key
 export const getApiKey = (): string | undefined => {
-    // Strictly use process.env.API_KEY as requested.
-    // Note: In Vercel + Vite/Webpack, ensure 'API_KEY' is exposed via define/env config if not using standard prefix.
-    // However, this strictly follows the instruction to use process.env.API_KEY.
+    // 1. Priority: Check process.env.API_KEY (Standard Node/Server environment)
     if (typeof process !== 'undefined' && process.env && process.env.API_KEY) {
         return process.env.API_KEY;
     }
+    
+    // 2. Fallback: Check import.meta.env.VITE_API_KEY (Vite Client-side environment)
+    // This is required for Vercel deployments of Client-Side React apps where process.env is not polyfilled.
+    try {
+        // @ts-ignore
+        if (import.meta && import.meta.env && import.meta.env.VITE_API_KEY) {
+            // @ts-ignore
+            return import.meta.env.VITE_API_KEY;
+        }
+    } catch (e) {
+        // Ignore errors if import.meta is not available
+    }
+    
     return undefined;
 };
 

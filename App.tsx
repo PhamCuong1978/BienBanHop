@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { transcribeAudio, generateMeetingMinutes, regenerateMeetingMinutes, identifySpeakers } from './services/geminiService';
 import { processAudio } from './services/audioProcessor';
@@ -563,7 +562,7 @@ const App: React.FC = () => {
                                                     <p className="font-bold text-cyan-300">Hướng dẫn cấu hình:</p>
                                                     <ol className="list-decimal list-inside space-y-2 ml-1 text-gray-400 text-xs sm:text-sm">
                                                         <li>Vào <strong>Settings</strong> &rarr; <strong>Environment Variables</strong> trên Vercel.</li>
-                                                        <li>Thêm biến mới có tên: <code className="text-yellow-400 bg-gray-800 px-1 rounded">API_KEY</code></li>
+                                                        <li>Thêm biến mới có tên: <code className="text-yellow-400 bg-gray-800 px-1 rounded">VITE_API_KEY</code></li>
                                                         <li>Giá trị: <em>(Dán khóa API Gemini của bạn)</em></li>
                                                         <li>Nhấn <strong>Save</strong> và quan trọng nhất là <strong>Redeploy</strong> lại dự án.</li>
                                                     </ol>
