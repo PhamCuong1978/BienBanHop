@@ -497,7 +497,10 @@ const App: React.FC = () => {
                 
                 <main className="space-y-6 bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-2xl border border-gray-700">
                      <div className="space-y-4">
-                        <h2 className="text-lg font-semibold text-cyan-400 border-b border-gray-600 pb-2">1. Get Content</h2>
+                        <div className="flex justify-between items-end border-b border-gray-600 pb-2">
+                            <h2 className="text-lg font-semibold text-cyan-400">1. Get Content</h2>
+                            <h2 className="text-lg font-semibold text-cyan-400">2. Version 2.0</h2>
+                        </div>
                         <div className="flex border-b border-gray-600 -mt-2">
                            <TabButton tabName="file">From File(s)</TabButton>
                            <TabButton tabName="live">Live Recording</TabButton>
